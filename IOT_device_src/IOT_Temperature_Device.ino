@@ -28,7 +28,7 @@ char pass[] = ""; // network password
 int status = WL_IDLE_STATUS;
 
 String fullAddress = ""; // ip and port
-IPAddress server(000, 000, 00, 000);        // ip seperated by ","
+IPAddress server(000, 000, 000, 000);        // ip seperated by ","
 const int port = 8080;
 WiFiClient client;
 
@@ -37,9 +37,9 @@ void setup() {
   // ------- Debug --------
 
   Serial.begin(9600);
-  //while (!Serial) {
-  //  ; // wait for serial port to connect.
-  //}
+  while (!Serial) {
+    ; // wait for serial port to connect.
+  }
 
   Serial.println("IOT - Indoor and Outdoor thermometer startup ...");
   Serial.println();
@@ -154,9 +154,9 @@ void sendReadings() {
     Serial.println("Connected to server!");
 
     // Make a HTTP request:
-    String str = "PUT /temperaturelogger/log/?indoorTemp=";
+    String str = "POST /temperature?INDOORTEMP=";
     str +=  String(indoorTemp);
-    str += "&outdoorTemp=";
+    str += "&OUTDOORTEMP=";
     str += String(outdoorTemp);
     str += " HTTP/1.1";
     client.println(str);

@@ -67,12 +67,6 @@ public class TemperatureController {
         return gson.toJson(reading);
     }
 
-//    @GetMapping(value = "/query", produces = "application/json")
-//    public String select(@RequestParam int timespan, @RequestParam boolean max, @RequestParam boolean min) {
-//        log.info("Select temperature readings with following query parameters: " + "timespan=" + timespan + ", max" + ", min" + min);
-//
-//        return ""; // TODO FILTER QUERY
-//    }
-
+    // TODO: Add query filtering
 
 }
