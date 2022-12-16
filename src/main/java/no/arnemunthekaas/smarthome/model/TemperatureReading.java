@@ -17,7 +17,8 @@ public class TemperatureReading {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private int ID;
-    private Timestamp TIME_STAMP;
+    @Column(name = "TIME_STAMP")
+    private Timestamp TIMESTAMP;
     private float INDOORTEMP;
     private float OUTDOORTEMP;
 

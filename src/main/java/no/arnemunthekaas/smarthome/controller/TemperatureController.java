@@ -25,7 +25,7 @@ public class TemperatureController {
     @GetMapping(produces = "application/json")
     public String selectAll() {
         List<TemperatureReading> readings = temperatureDAO.findAll();
-        log.info("Select all temperature readings from database: " + readings);
+        log.info("Select all temperature readings from database: " + readings.size() + " readings found");
         return gson.toJson(readings);
     }
 
@@ -53,12 +53,26 @@ public class TemperatureController {
 
         temperatureReading.setINDOORTEMP(INDOORTEMP);
         temperatureReading.setOUTDOORTEMP(OUTDOORTEMP);
-        temperatureReading.setTIME_STAMP(new Timestamp(System.currentTimeMillis())); // TODO: Should this be sent by arduino (arduino recieves via api -call)
+        temperatureReading.setTIMESTAMP(new Timestamp(System.currentTimeMillis())); // TODO: Should this be sent by arduino (arduino recieves via api -call)
         log.info("Create new temperature reading: " + temperatureReading);
 
         temperatureDAO.save(temperatureReading);
         log.info("Insert temperature reading to database: " + temperatureReading);
     }
+
+    @GetMapping(value = "/mostrecent", produces = "application/json")
+    public String select() {
+        TemperatureReading reading = temperatureDAO.findFirstByOrderByTIMESTAMPDesc();
+        log.info("Select most recent temperature reading from database: " + reading);
+        return gson.toJson(reading);
+    }
+
+//    @GetMapping(value = "/query", produces = "application/json")
+//    public String select(@RequestParam int timespan, @RequestParam boolean max, @RequestParam boolean min) {
+//        log.info("Select temperature readings with following query parameters: " + "timespan=" + timespan + ", max" + ", min" + min);
+//
+//        return ""; // TODO FILTER QUERY
+//    }
 
 
 }
