@@ -14,6 +14,7 @@ using a PostgreSQL database.
 - [ ] Display cool statistics
 - [ ] More devices/sensors?
 - [ ] Update DB and API accordingly
+- [ ] Update arduino software to be smarter (react to different http responses and act accordingly)
 
 ### Temperature Reading example
 ```
