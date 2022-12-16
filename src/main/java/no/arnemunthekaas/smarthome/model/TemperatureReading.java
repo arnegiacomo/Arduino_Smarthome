@@ -6,7 +6,7 @@ import lombok.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "temperaturereading", schema = "temperaturedb")
+@Table(name = "DS18B20", schema = "temperature")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,5 +21,4 @@ public class TemperatureReading {
     private Timestamp TIMESTAMP;
     private float INDOORTEMP;
     private float OUTDOORTEMP;
-
 }
