@@ -1,0 +1,13 @@
+
+DROP SCHEMA IF EXISTS temperaturedb CASCADE;
+CREATE SCHEMA temperaturedb;
+SET search_path = temperaturedb;
+
+CREATE TABLE TemperatureReading
+(
+	ID SERIAL,
+	TIME_STAMP TIMESTAMP,
+	INDOORTEMP FLOAT,
+	OUTDOORTEMP FLOAT,
+    PRIMARY KEY (ID)
+);
