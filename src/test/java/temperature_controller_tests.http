@@ -1,1 +1,5 @@
+### Select all temperature readings
 GET http://localhost:8080/temperature
+
+### Insert a new temperature reading
+POST http://localhost:8080/temperature?INDOORTEMP=10.0&OUTDOORTEMP=10.0

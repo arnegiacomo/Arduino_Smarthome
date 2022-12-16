@@ -1,10 +1,7 @@
 package no.arnemunthekaas.smarthome.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -18,6 +15,7 @@ public class TemperatureReading {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private int ID;
     private Timestamp TIME_STAMP;
     private float INDOORTEMP;
