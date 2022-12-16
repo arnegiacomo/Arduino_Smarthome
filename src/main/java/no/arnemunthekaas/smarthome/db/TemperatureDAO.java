@@ -1,13 +1,8 @@
 package no.arnemunthekaas.smarthome.db;
 
-import java.util.List;
-
 import no.arnemunthekaas.smarthome.model.TemperatureReading;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TemperatureDAO {
-
-    List<TemperatureReading> findAll();
-
-    void insertReading(TemperatureReading temperatureReading);
+public interface TemperatureDAO extends JpaRepository<TemperatureReading, Integer> {
 
 }
