@@ -1,5 +1,8 @@
 ### Select all temperature readings
 GET http://localhost:8080/temperature
 
+### Select a temperature reading given an ID
+GET http://localhost:8080/temperature/300
+
 ### Insert a new temperature reading
 POST http://localhost:8080/temperature?INDOORTEMP=10.0&OUTDOORTEMP=10.0
