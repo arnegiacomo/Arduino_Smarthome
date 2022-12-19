@@ -23,8 +23,8 @@ const int R = 2;
 const int RESETPIN = 7;
 
 // WiFi router setup
-char ssid[] = ""; // network SSID (aka WiFi name)
-char pass[] = ""; // network password
+const char ssid[] = ""; // network SSID (aka WiFi name)
+const char pass[] = ""; // network password
 int status = WL_IDLE_STATUS;
 
 String fullAddress = ""; // ip and port
@@ -38,7 +38,7 @@ void setup() {
 
   Serial.begin(9600);
   while (!Serial) {
-    ; // wait for serial port to connect.
+    ; // wait for serial port to connect. Disable this in "production"
   }
 
   Serial.println("IOT - Indoor and Outdoor thermometer startup ...");
