@@ -48,9 +48,10 @@ public class EnvironmentController {
     }
 
     @PostMapping()
-    public void insert(@RequestParam float TEMPERATURE, @RequestParam float HUMIDITY, @RequestParam float PRESSURE, @RequestParam float LUX, @RequestParam float UVA, @RequestParam float UVB, @RequestParam float UVI) {
+    public void insert(@RequestParam long UNIXTIMEINSECONDS, @RequestParam float TEMPERATURE, @RequestParam float HUMIDITY, @RequestParam float PRESSURE, @RequestParam float LUX, @RequestParam float UVA, @RequestParam float UVB, @RequestParam float UVI) {
         EnvironmentReading environmentReading = new EnvironmentReading();
 
+        environmentReading.setTIMESTAMP(new Timestamp(UNIXTIMEINSECONDS * 1000));
         environmentReading.setTEMPERATURE(TEMPERATURE);
         environmentReading.setHUMIDITY(HUMIDITY);
         environmentReading.setPRESSURE(PRESSURE);
@@ -58,7 +59,6 @@ public class EnvironmentController {
         environmentReading.setUVA(UVA);
         environmentReading.setUVB(UVB);
         environmentReading.setUVI(UVI);
-        environmentReading.setTIMESTAMP(new Timestamp(System.currentTimeMillis())); // TODO: Should this be sent by arduino itself (arduino recieves via api-call)?
         log.info("Create new environment reading: " + environmentReading);
 
         environmentDAO.save(environmentReading);
