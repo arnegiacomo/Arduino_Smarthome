@@ -5,4 +5,5 @@ so it can be copied to the Arduino Sketchbook folder (usually /Documents/Arduino
 
 [Official Arduino IDE 2.0 documentation](https://docs.arduino.cc/software/ide-v2/tutorials/getting-started-ide-v2)
 
-
+## Device list
+- TODO
