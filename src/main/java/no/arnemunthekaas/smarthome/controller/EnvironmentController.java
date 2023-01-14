@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController()
-@RequestMapping("environment")
+@RequestMapping("/api/environment")
 @Log4j2
 public class EnvironmentController {
 

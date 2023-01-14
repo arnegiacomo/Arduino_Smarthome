@@ -176,7 +176,7 @@ void sendReadings() {
     Serial.println("Connected to server!");
 
     // Make a HTTP request:
-    String str = "POST /temperature?UNIXTIMEINSECONDS=";
+    String str = "POST /api/temperature?UNIXTIMEINSECONDS=";
     str +=  String(time);
     str += "&INDOORTEMP=";
     str +=  String(indoorTemp);

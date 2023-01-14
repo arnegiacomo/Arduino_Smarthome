@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController()
-@RequestMapping("temperature")
+@RequestMapping("/api/temperature")
 @Log4j2
 public class TemperatureController {
 
