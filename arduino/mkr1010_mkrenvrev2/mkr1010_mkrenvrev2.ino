@@ -12,21 +12,15 @@ int status = WL_IDLE_STATUS;     // the Wifi radio's status
 IPAddress address;
 WiFiClient client;
 
-// Reset pin
-const int RESETPIN = 7;
-
 // LED pins
 const int R = 25;
 const int G = 26;
 const int B = 27;
 
+// Startup time
+long startup;
+
 void setup() {
-  // ------- Reset Pin --------
-
-  digitalWrite(RESETPIN, HIGH);
-  delay(200);
-  pinMode(RESETPIN, OUTPUT);
-
   // ------- Debug --------
 
   Serial.begin(9600);
@@ -62,6 +56,8 @@ void setup() {
   WiFiDrv::pinMode(G, OUTPUT);
   WiFiDrv::pinMode(B, OUTPUT);
 
+  // ------- Startup --------
+  startup = WiFi.getTime();
 
   Serial.println("IOT - MKR1010 environmental startup complete!");
 }
@@ -74,9 +70,9 @@ float uva;
 float uvb;
 float uvi;
 
+const int DELAY = 60; // delay
+const long reset_time = 60*60*6; // how many seconds between resets, here 6hrs
 long time = -1;
-
-const int DELAY = 5 * 60; // Delay between readings in seconds (5 min)
 
 void loop() {
   //reset();
@@ -84,7 +80,12 @@ void loop() {
     return; // Return if time since last reading is less than 5 min
   }
 
-  time = WiFi.getTime();
+  if ((WiFi.getTime() - startup) >= reset_time) {
+    reset();
+  }
+  if (time != -1 && WiFi.getTime()-time < DELAY) {
+    return; // Return if time since last reading is less than 60s
+  }
 
   // Do readings
   doReadings();
@@ -96,7 +97,27 @@ void loop() {
   sendReadings();
 }
 
+void reset() {
+  rgb(255, 0, 0);
+  delay(100);
+  rgb(0, 0, 0);
+  delay(100);
+  rgb(255, 0, 0);
+  delay(100);
+  rgb(0, 0, 0);
+  delay(100);
+  rgb(255, 0, 0);
+  delay(100);
+  Serial.println();
+  Serial.println("----------------------");
+  Serial.println("Reset imminent...");
+  Serial.println("----------------------");
+  Serial.println();
+  NVIC_SystemReset();
+}
+
 void doReadings() {
+  time = WiFi.getTime();
   temperature = ENV.readTemperature();
   humidity = ENV.readHumidity();
   lux = ENV.readIlluminance();
@@ -146,7 +167,7 @@ void sendReadings() {
     Serial.println("Connected to server!");
 
     // Make a HTTP request:
-    String str = "POST /environment?UNIXTIMEINSECONDS=";
+    String str = "POST /api/environment?UNIXTIMEINSECONDS=";
     str +=  String(time);
     str += "&TEMPERATURE=";
     str +=  String(temperature);
@@ -216,14 +237,6 @@ void printWifiStatus() {
   Serial.print("signal strength (RSSI):");
   Serial.print(rssi);
   Serial.println(" dBm");
-}
-
-void reset() {
-  Serial.println();
-  Serial.println("Reset imminent...");
-  Serial.println("~~~~~~~~~~~~~~~~~~");
-  Serial.println();
-  digitalWrite(RESETPIN, LOW);
 }
 
 void rgb(int r, int g, int b) {
