@@ -35,10 +35,10 @@ const int RESETPIN = 7;
 void setup() {
 
   // ------- Debug --------
-  Serial.begin(9600);
-  while (!Serial) {
-    ; // wait for serial port to connect. Disable this in "production"
-  }
+//  Serial.begin(9600);
+//  while (!Serial) {
+//    ; // wait for serial port to connect. Disable this in "production"
+//  }
 
   Serial.println("IOT - MKR1000 Indoor and Outdoor thermometer startup ...");
   Serial.println();
