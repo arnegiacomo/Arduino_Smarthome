@@ -1,13 +1,21 @@
 # Arduino Smart Home
-Smart home project using (for now) an
-[Arduino MKR 1000 WiFi](https://docs.arduino.cc/hardware/mkr-1000-wifi) based IOT device with indoor and outdoor 
-[DS18B20](https://www.kjell.com/globalassets/mediaassets/745057_87081_manual_en.pdf?ref=C2D11F00F2)
-temperature sensors, and [Spring Boot](https://spring.io/projects/spring-boot) based REST API-server 
-running on a [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) 
-using a PostgreSQL database.
+
+> Arduino & Raspberry pi "IOT Smart-home" project, based on the Arduino MKR family.
+
+The main java application is a Java 17 Spring Boot application that runs on a Raspberry 4 8gb connected to my home-network. 
+The application provides a REST api for the IOT-devices to routinely post new readings to, and to get readings from. All readings 
+are recorded into a local PostgreSQL 13 database running on the Raspberry pi. 
+
+Per now the logged data is not used for much, except for some machine learning side-projects. However, the goal will eventually 
+be for there to be a web portal/GUI where information from the system can be neatly displayed and retrieved, in addition to
+ being able to manage the system and individual devices.
 
 ### Device list
-*WIP*
+- [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) running Java 17 and PostgreSQL 13
+- [Arduino MKR 1000 WiFi](https://docs.arduino.cc/hardware/mkr-1000-wifi) running two [ds18b20](https://www.kjell.com/globalassets/mediaassets/745057_87081_manual_en.pdf?ref=C2D11F00F2) 
+temperature sensors (Indoor/Outdoor)
+- [Arduino MKR 1010 WiFi](https://docs.arduino.cc/hardware/mkr-wifi-1010) running a [MKR ENV Shield Rev 2](https://docs.arduino.cc/hardware/mkr-env-shield) (Indoor)
+
 
 ### Progress
 - [x] Indoor/Outdoor thermometers
@@ -43,6 +51,8 @@ using a PostgreSQL database.
     "UVB": 0.0,
     "UVI": 0.0
 }
+
+note: Beware that all UV data is 0 since this reader is indoors
 ```
 
 ### Arduino schematics
