@@ -32,13 +32,16 @@ const int R = 2;
 
 // Reset pin
 const int RESETPIN = 7;
+
+// Startup time
+long startup;
 void setup() {
 
   // ------- Debug --------
-//  Serial.begin(9600);
-//  while (!Serial) {
-//    ; // wait for serial port to connect. Disable this in "production"
-//  }
+  Serial.begin(9600);
+  while (!Serial) {
+    ; // wait for serial port to connect. Disable this in "production"
+  }
 
   Serial.println("IOT - MKR1000 Indoor and Outdoor thermometer startup ...");
   Serial.println();
@@ -85,6 +88,9 @@ void setup() {
   address.fromString(ADDRESS);
   Serial.println(address);
 
+  // ------- Startup --------
+  startup = WiFi.getTime();
+
   Serial.println();
   Serial.println("IOT - MKR1000 Indoor and Outdoor thermometer startup complete!");
 }
@@ -92,13 +98,17 @@ void setup() {
 float indoorTemp;
 float outdoorTemp;
 const int minutesperreading = 1;
-const int DELAY = minutesperreading * 60 * 1000; // How often to wait between temperature readings in ms (default: every 60s)
-int resetCounter = 0;
-const int resetInterval = 360;  // How often to reset (reconnects to internet, rediscovers sensors) (every 360*5 readings ~ 6 hrs)
+const int DELAY = 60; // delay
+const long reset_time = 60*60*6; // how many seconds between resets, here 6hrs
 long time = -1;
 
 void loop() {
-
+  if ((WiFi.getTime() - startup) >= reset_time) {
+    reset();
+  }
+  if (time != -1 && WiFi.getTime()-time < DELAY) {
+    return; // Return if time since last reading is less than 60s
+  }
   // Do readings
   doReadings();
 
@@ -107,22 +117,24 @@ void loop() {
 
   sendReadings();
 
-  delay(500);
   rgb(0, 0, 0);
-
-  delay(DELAY);
-
-  resetCounter++;
-  if (resetCounter >= resetInterval) {
-    reset();
-  }
-
 }
 
 void reset() {
+  rgb(255, 0, 0);
+  delay(100);
+  rgb(0, 0, 0);
+  delay(100);
+  rgb(255, 0, 0);
+  delay(100);
+  rgb(0, 0, 0);
+  delay(100);
+  rgb(255, 0, 0);
+  delay(100);
   Serial.println();
+  Serial.println("----------------------");
   Serial.println("Reset imminent...");
-  Serial.println("~~~~~~~~~~~~~~~~~~");
+  Serial.println("----------------------");
   Serial.println();
   digitalWrite(RESETPIN, LOW);
 }
