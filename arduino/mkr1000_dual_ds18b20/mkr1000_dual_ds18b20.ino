@@ -1,7 +1,18 @@
+#include "arduino_config.h"
+
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <WiFi101.h>
 #include <WiFiClient.h>
+
+// Wifi
+char SSID[] = SECRET_SSID;    // Network SSID
+char PASS[] = SECRET_PASS;      // Network Password
+int status = WL_IDLE_STATUS;     // the Wifi radio's status
+
+// API
+IPAddress address;
+WiFiClient client;
 
 // Data wire for temperature sensors is plugged into digital pin 6 on the Arduino
 #define ONE_WIRE_BUS 6
@@ -21,44 +32,30 @@ const int R = 2;
 
 // Reset pin
 const int RESETPIN = 7;
-
-// WiFi router setup
-const char ssid[] = ""; // network SSID (aka WiFi name)
-const char pass[] = ""; // network password
-int status = WL_IDLE_STATUS;
-
-String fullAddress = ""; // ip and port
-IPAddress server(000, 000, 000, 000);        // ip seperated by ","
-const int port = 8080;
-WiFiClient client;
-
 void setup() {
 
   // ------- Debug --------
-
   Serial.begin(9600);
   while (!Serial) {
     ; // wait for serial port to connect. Disable this in "production"
   }
 
-  Serial.println("IOT - Indoor and Outdoor thermometer startup ...");
+  Serial.println("IOT - MKR1000 Indoor and Outdoor thermometer startup ...");
   Serial.println();
 
-  // Setup reset pin
-
+  // ------- Reset pin --------
   digitalWrite(RESETPIN, HIGH);
   delay(200);
   pinMode(RESETPIN, OUTPUT);
 
-  // -----------------------
-
-  // RGB LED
+  // ------- RGB LED --------
   pinMode(G, OUTPUT);
   pinMode(R, OUTPUT);
   pinMode(B, OUTPUT);
 
   rgb(255, 0, 0);
 
+  // ------- ds18b20 --------
   sensors.begin();  // Start up the library
 
   // locate devices on the bus
@@ -73,6 +70,7 @@ void setup() {
     rgb(0, 0, 255);
   }
 
+  // ------- WiFi --------
   wifiSetup();
 
   if (status != WL_IDLE_STATUS) {
@@ -82,25 +80,32 @@ void setup() {
     rgb(255, 0, 0);
     delay(250);
   }
+
+  // ------- API --------
+  address.fromString(ADDRESS);
+  Serial.println(address);
+
+  Serial.println();
+  Serial.println("IOT - MKR1000 Indoor and Outdoor thermometer startup complete!");
 }
 
-float indoorTemp = 150; // Max temp for DS18B20: ~ +125°
-float outdoorTemp = 150;
-const int DELAY = 5 * 60 * 1000; // How often to wait between temperature readings in ms (default: every 5 min)
+float indoorTemp;
+float outdoorTemp;
+const int minutesperreading = 1;
+const int DELAY = minutesperreading * 60 * 1000; // How often to wait between temperature readings in ms (default: every 60s)
 int resetCounter = 0;
-const int resetInterval = 360;  // How often to reset (reconnects to internet, rediscovers sensors) (every 360 readings ~ 6 hrs)
+const int resetInterval = 360;  // How often to reset (reconnects to internet, rediscovers sensors) (every 360*5 readings ~ 6 hrs)
+long time = -1;
 
 void loop() {
-  readTemperatures();
-  printTemperatures();
 
-  // Check for anomalies
-  if (-56 < indoorTemp < 126 && -56 < outdoorTemp < 126) {
-    sendReadings();
-  } else {
-    rgb(255, 0, 0);
-    Serial.println("Reading error, temperature readings not sent!");
-  }
+  // Do readings
+  doReadings();
+
+  // Print readings
+  printReadings();
+
+  sendReadings();
 
   delay(500);
   rgb(0, 0, 0);
@@ -122,7 +127,9 @@ void reset() {
   digitalWrite(RESETPIN, LOW);
 }
 
-void readTemperatures() {
+void doReadings() {
+  time = WiFi.getTime();
+
   // Send command to all the sensors for temperature conversion
   sensors.requestTemperatures();
   // Update temperature readings
@@ -130,10 +137,13 @@ void readTemperatures() {
   outdoorTemp = sensors.getTempCByIndex(0);
 }
 
-void printTemperatures() {
+void printReadings() {
   // Print temperatures
   Serial.println();
   Serial.println("----------------------");
+  Serial.print("Unix time : ");
+  Serial.print(time);
+  Serial.println();
   Serial.print("Indoor : ");
   Serial.print(indoorTemp);
   Serial.print("°C");
@@ -150,7 +160,7 @@ void sendReadings() {
   Serial.println("\nStarting connection to server ...");
   // if you get a connection, report back via serial:
   rgb(0, 0, 50);
-  if (client.connect(server, port)) {
+  if (client.connect(ADDRESS, PORT)) {
     Serial.println("Connected to server!");
 
     // Make a HTTP request:
@@ -161,7 +171,9 @@ void sendReadings() {
     str += " HTTP/1.1";
     client.println(str);
     str = "Host: ";
-    str += fullAddress;
+    str += ADDRESS;
+    str += ":";
+    str += PORT;
     client.println(str);
     client.println("Connection: close");
     client.println();
@@ -195,10 +207,10 @@ void wifiSetup() {
   // attempt to connect to Wifi network:
   while ( status != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
-    Serial.print(ssid);                   // print the network name (SSID);
+    Serial.print(SSID);                   // print the network name (SSID);
     Serial.println(" ...");
     // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    status = WiFi.begin(ssid, pass);
+    status = WiFi.begin(SSID, PASS);
     // wait 10 seconds for connection:
     delay(10000);
   }
