@@ -48,12 +48,12 @@ public class TemperatureController {
     }
 
     @PostMapping()
-    public void insert(@RequestParam float INDOORTEMP, @RequestParam float OUTDOORTEMP) {
+    public void insert(@RequestParam long UNIXTIMEINSECONDS, @RequestParam float INDOORTEMP, @RequestParam float OUTDOORTEMP) {
         TemperatureReading temperatureReading = new TemperatureReading();
 
+        temperatureReading.setTIMESTAMP(new Timestamp(UNIXTIMEINSECONDS * 1000));
         temperatureReading.setINDOORTEMP(INDOORTEMP);
         temperatureReading.setOUTDOORTEMP(OUTDOORTEMP);
-        temperatureReading.setTIMESTAMP(new Timestamp(System.currentTimeMillis())); // TODO: Should this be sent by arduino (arduino recieves via api -call)
         log.info("Create new temperature reading: " + temperatureReading);
 
         temperatureDAO.save(temperatureReading);
