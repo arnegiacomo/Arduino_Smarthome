@@ -1,4 +1,4 @@
-package no.arnemunthekaas.smarthome.controller;
+package no.arnemunthekaas.smarthome.controller.rest;
 
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j2;
@@ -23,14 +23,14 @@ public class EnvironmentController {
     private EnvironmentDAO environmentDAO;
 
     @GetMapping(produces = "application/json")
-    public String selectAll() {
+    public String findAll() {
         List<EnvironmentReading> readings = environmentDAO.findAll();
         log.info("Select all environment readings from database: " + readings.size() + " readings found");
         return gson.toJson(readings);
     }
 
     @GetMapping(value = "/{ID}", produces = "application/json")
-    public String select(@PathVariable int ID) {
+    public String find(@PathVariable int ID) {
         Optional<EnvironmentReading> reading = environmentDAO.findById(ID);
         log.info("Select environment reading " + ID + " from database: " + reading);
 
@@ -48,7 +48,7 @@ public class EnvironmentController {
     }
 
     @PostMapping()
-    public void insert(@RequestParam long UNIXTIMEINSECONDS, @RequestParam float TEMPERATURE, @RequestParam float HUMIDITY, @RequestParam float PRESSURE, @RequestParam float LUX, @RequestParam float UVA, @RequestParam float UVB, @RequestParam float UVI) {
+    public void save(@RequestParam long UNIXTIMEINSECONDS, @RequestParam float TEMPERATURE, @RequestParam float HUMIDITY, @RequestParam float PRESSURE, @RequestParam float LUX, @RequestParam float UVA, @RequestParam float UVB, @RequestParam float UVI) {
         EnvironmentReading environmentReading = new EnvironmentReading();
 
         environmentReading.setTIMESTAMP(new Timestamp(UNIXTIMEINSECONDS * 1000));
@@ -66,7 +66,7 @@ public class EnvironmentController {
     }
 
     @GetMapping(value = "/mostrecent", produces = "application/json")
-    public String select() {
+    public String findMostRecent() {
         EnvironmentReading reading = environmentDAO.findFirstByOrderByTIMESTAMPDesc();
         log.info("Select most recent environment reading from database: " + reading);
         return gson.toJson(reading);

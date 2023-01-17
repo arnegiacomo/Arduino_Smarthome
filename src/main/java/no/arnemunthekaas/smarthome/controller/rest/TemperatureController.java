@@ -1,4 +1,4 @@
-package no.arnemunthekaas.smarthome.controller;
+package no.arnemunthekaas.smarthome.controller.rest;
 
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j2;
@@ -23,14 +23,14 @@ public class TemperatureController {
     private TemperatureDAO temperatureDAO;
 
     @GetMapping(produces = "application/json")
-    public String selectAll() {
+    public String findAll() {
         List<TemperatureReading> readings = temperatureDAO.findAll();
         log.info("Select all temperature readings from database: " + readings.size() + " readings found");
         return gson.toJson(readings);
     }
 
     @GetMapping(value = "/{ID}", produces = "application/json")
-    public String select(@PathVariable int ID) {
+    public String find(@PathVariable int ID) {
         Optional<TemperatureReading> reading = temperatureDAO.findById(ID);
         log.info("Select temperature reading " + ID + " from database: " + reading);
 
@@ -48,7 +48,7 @@ public class TemperatureController {
     }
 
     @PostMapping()
-    public void insert(@RequestParam long UNIXTIMEINSECONDS, @RequestParam float INDOORTEMP, @RequestParam float OUTDOORTEMP) {
+    public void save(@RequestParam long UNIXTIMEINSECONDS, @RequestParam float INDOORTEMP, @RequestParam float OUTDOORTEMP) {
         TemperatureReading temperatureReading = new TemperatureReading();
 
         temperatureReading.setTIMESTAMP(new Timestamp(UNIXTIMEINSECONDS * 1000));
@@ -61,7 +61,7 @@ public class TemperatureController {
     }
 
     @GetMapping(value = "/mostrecent", produces = "application/json")
-    public String select() {
+    public String findMostRecent() {
         TemperatureReading reading = temperatureDAO.findFirstByOrderByTIMESTAMPDesc();
         log.info("Select most recent temperature reading from database: " + reading);
         return gson.toJson(reading);

@@ -1,0 +1,24 @@
+type Query {
+    allTemperatureReadings: [TemperatureReading]
+    allEnvironmentReadings: [EnvironmentReading]
+}
+
+
+type TemperatureReading {
+    ID: Int
+    TIMESTAMP: String
+    INDOORTEMP: Float
+    OUTDOORTEMP: Float
+}
+
+type EnvironmentReading {
+    ID: Int
+    TIMESTAMP: String
+    TEMPERATURE: Float
+    HUMIDITY: Float
+    PRESSURE: Float
+    LUX: Float
+    UVA: Float
+    UVB: Float
+    UVI: Float
+}
