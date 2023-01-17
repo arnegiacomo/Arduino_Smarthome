@@ -55,8 +55,5 @@ temperature sensors (Indoor/Outdoor)
 note: Beware that all UV data is 0 since this reader is indoors
 ```
 
-### Arduino schematics
-*WIP*
-
 ### Gallery
 *WIP*
