@@ -16,7 +16,6 @@ be for there to be a web portal/GUI where information from the system can be nea
 temperature sensors (Indoor/Outdoor)
 - [Arduino MKR 1010 WiFi](https://docs.arduino.cc/hardware/mkr-wifi-1010) running a [MKR ENV Shield Rev 2](https://docs.arduino.cc/hardware/mkr-env-shield) (Indoor)
 
-test
 ### Progress
 - [x] Indoor/Outdoor thermometers
 - [x] Temperature Database
